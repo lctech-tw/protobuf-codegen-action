@@ -20,5 +20,5 @@ runs:
         INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
 
     - name: Proto Compile
-      run: sh "${{ github.action_path }}/compile.sh"
+      run: "${{ github.action_path }}/compile.sh"
       shell: bash
