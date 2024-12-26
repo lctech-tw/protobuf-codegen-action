@@ -1,0 +1,24 @@
+name: 'Protofub Gen'
+description: 'A GitHub Action for generating code from Protocol Buffers (.proto) files, supporting languages like Go, Python, and TypeScript'
+
+inputs:
+  name:
+    description: 'Your name'
+    required: true
+    default: 'my friend'
+  greeting:
+    description: 'Custom greeting message'
+    default: 'Hello'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set Greeting
+      run: echo "Hello $INPUT_WHO_TO_GREET."
+      shell: bash
+      env:
+        INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
+
+    - name: Proto Compile
+      run: sh "${{ github.action_path }}/compile.sh"
+      shell: bash
