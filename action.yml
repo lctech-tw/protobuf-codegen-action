@@ -1,15 +1,6 @@
 name: 'Protofub Gen'
 description: 'A GitHub Action for generating code from Protocol Buffers (.proto) files, supporting languages like Go, Python, and TypeScript'
 
-inputs:
-  name:
-    description: 'Your name'
-    required: true
-    default: 'my friend'
-  greeting:
-    description: 'Custom greeting message'
-    default: 'Hello'
-
 runs:
   using: "composite"
   steps:
