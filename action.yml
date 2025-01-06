@@ -1,4 +1,4 @@
-name: 'Protofub Gen'
+name: 'Proto Compile'
 description: 'A GitHub Action for generating code from Protocol Buffers (.proto) files, supporting languages like Go, Python, and TypeScript'
 
 runs:
