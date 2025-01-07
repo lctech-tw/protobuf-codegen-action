@@ -39,6 +39,10 @@ process_file() {
     # Add header lines
     sed -i '1i---\noutline: deep\n---' "$file"
     echo "Add header lines to: $file"
+
+    # Add Git Tag Version below "outline: deep"
+    sed -i '/^---$/,/^---$/c\---\noutline: deep\n---\n# '"$TAG_VERSION" "$file"
+    echo "Added Git tag version: $TAG_VERSION to: $file"
 }
 
 # Iterate over all .md files
