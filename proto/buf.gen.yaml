@@ -1,0 +1,66 @@
+version: v2
+plugins:
+
+  #! GO
+  - remote: buf.build/connectrpc/go
+    out: dist/go
+  - remote: buf.build/protocolbuffers/go
+    out: dist/go
+  - remote: buf.build/bufbuild/validate-go
+    out: dist/go
+  - remote: buf.build/grpc/go
+    out: dist/go
+    opt: require_unimplemented_servers=false
+
+  #! Node
+  - remote: buf.build/grpc/node
+    out: dist/node
+    opt: grpc_js,binary,import_style=commonjs
+  - remote: buf.build/protocolbuffers/js
+    out: dist/node
+    opt: import_style=commonjs,binary
+  - remote: buf.build/community/timostamm-protobuf-ts
+    out: dist/node
+    opt:
+      - long_type_number
+      - output_javascript_es2015
+      - force_optimize_code_size
+      - client_generic
+      - generate_dependencies
+
+  #! GRPC-WEB
+  - remote: buf.build/protocolbuffers/js
+    out: dist/js
+    opt: import_style=commonjs
+  - remote: buf.build/grpc/web
+    out: dist/js
+    opt:
+      - import_style=commonjs+dts
+      - mode=grpcwebtext
+
+  #! C#
+  # - remote: buf.build/grpc/csharp
+  #   out: dist/csharp
+  # - remote: buf.build/protocolbuffers/csharp
+  #   out: dist/csharp
+
+  #! JAVA
+  # - remote: buf.build/protocolbuffers/java
+  #   out: dist/java
+  # - remote: buf.build/bufbuild/validate-java
+  #   out: dist/java
+
+  #! RUBY
+  - remote: buf.build/grpc/ruby
+    out: dist/ruby
+  - remote: buf.build/protocolbuffers/ruby
+    out: dist/ruby
+
+  #! DOC
+  - remote: buf.build/community/pseudomuto-doc
+    out: dist/docs
+    opt: markdown,docs.md
+  - remote: buf.build/community/pseudomuto-doc
+    out: dist/docs
+    opt: html,index.html
+    
