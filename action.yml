@@ -1,6 +1,11 @@
 name: 'Proto Compile'
 description: 'A GitHub Action for generating code from Protocol Buffers (.proto) files, supporting languages like Go, Python, and TypeScript'
 
+inputs:
+  version:
+    description: 'Your name'
+    required: false
+
 runs:
   using: "composite"
   steps:
@@ -10,5 +15,7 @@ runs:
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }} 
     - name: Proto Compile
-      run: compile.sh
+      run: TAG_VERSION=${TAG_VERSION} compile.sh
       shell: bash
+      env:
+        TAG_VERSION: ${{ inputs.version }}
