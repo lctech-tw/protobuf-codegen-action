@@ -97,7 +97,7 @@ else
     # remove TOC
     FORMATER="md-formater.sh"
     curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/$FORMATER"
-    sudo TAG_VERSION=$TAG_VERSION ./"$FORMATER" 
+    docker run -e TAG_VERSION=$TAG_VERSION --volume "$(pwd):/workspace" --workdir /workspace bash:5.2 bash "$FORMATER"  
 fi
 
 echo "@ Done 🎉🎉🎉"
