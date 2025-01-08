@@ -97,7 +97,7 @@ else
     # remove TOC
     FORMATER="md-formater.sh"
     curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/$FORMATER"
-    sudo bash "$FORMATER" 
+    sudo TAG_VERSION=$TAG_VERSION ./"$FORMATER" 
 fi
 
 echo "@ Done 🎉🎉🎉"
