@@ -46,7 +46,7 @@ process_file() {
 }
 
 # Iterate over all .md files
-find ./dist -type f -name "*.md" | while IFS= read -r file; do
+find . -type f -name "*.md" | while IFS= read -r file; do
     process_file "$file"
 done
 

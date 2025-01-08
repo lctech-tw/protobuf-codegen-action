@@ -86,7 +86,8 @@ else
     # remove TOC
     FORMATER="md-formater.sh"
     curl -sLJO "https://raw.githubusercontent.com/lctech-tw/util_scripts/main/proto/$FORMATER"
-    docker run  --rm -v "$(pwd)":/workdir  --workdir /workdir alpine:latest sh "$FORMATER"
+    # docker run  --rm -v "$(pwd)":/workdir  --workdir /workdir alpine:latest sh "$FORMATER"
+    sudo bash "$FORMATER"
 
     mv dist ../dist && rm -rf buf.yaml buf.gen.yaml buf.lock
     # Modufy golang path
