@@ -14,8 +14,13 @@ runs:
       shell: bash
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }} 
+    - name: Proto Dependencies
+      run: 
+        dependent-proto.sh
+      shell: bash
     - name: Proto Compile
-      run: TAG_VERSION="v${TAG_VERSION}" compile.sh
+      run: 
+        TAG_VERSION="v${TAG_VERSION}" compile.sh
       shell: bash
       env:
         TAG_VERSION: ${{ inputs.version }}
