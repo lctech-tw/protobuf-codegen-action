@@ -95,9 +95,8 @@ else
     cd .. && rm -rf src && mv tmp_src src
 
     # remove TOC
-    FORMATER="md-formater.sh"
-    curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/$FORMATER"
-    docker run -e TAG_VERSION=$TAG_VERSION --volume "$(pwd):/workspace" --workdir /workspace bash:5.2 bash "$FORMATER"  
+    curl -sL "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/md-formater.sh" | docker run -i -e TAG_VERSION=$TAG_VERSION --volume "$(pwd):/workspace" --workdir /workspace bash:5.2 bash
+
 fi
 
 echo "@ Done 🎉🎉🎉"
