@@ -90,10 +90,6 @@ else
     sudo rm -rf ../dist/go/github.com/*
     # Restore original src
     cd .. && rm -rf src && mv tmp_src src
-
-    # remove TOC
-    # sudo -E TAG_VERSION=$TAG_VERSION curl -sL "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/md-formater.sh" | bash
-
 fi
 
 echo "@ Done 🎉🎉🎉"
