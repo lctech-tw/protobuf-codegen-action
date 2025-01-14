@@ -53,7 +53,7 @@ process_file() {
     echo "Add header lines to: $file"
 
     # Add Git Tag Version below "outline: deep"
-    sed -i '/^---$/,/^---$/c\---\noutline: deep\n---\n# '"$TAG_VERSION" "$file"
+    sed -i '/^---$/,/^---$/c\---\noutline: deep\n---\n# '"v$TAG_VERSION" "$file"
     echo "Added Git tag version: $TAG_VERSION to: $file"
 }
 
