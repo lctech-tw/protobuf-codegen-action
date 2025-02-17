@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Compile
         uses: lctech-tw/protobuf-codegen-action@v0
