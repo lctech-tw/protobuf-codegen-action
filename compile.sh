@@ -43,8 +43,8 @@ if [ "$COMPILE_MODE" == "Multi" ] || [ "$COMPILE_MODE" == "MULITI" ] || [ "$COMP
     echo -e "@ ENGINE = ${RED}Default${NC}"
     echo -e "@ ENV / COMPILE_MODE = ${COMPILE_MODE:-Default} : SCRIPT_FILE = ${RED}$SCRIPT_FILE${NC}"
     # Download script
-    curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/$SCRIPT_FILE"
-    curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/build-protoc-node.sh"
+    curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/$SCRIPT_FILE"
+    curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/build-protoc-node.sh"
     # Auth
     if [ ! "$(whoami)" == "lctech-zeki" ]; then
         # GCP
@@ -68,10 +68,10 @@ else
     cd ./src || exit
     # Download buf.yaml and buf.gen.yaml
     if [ ! -f "buf.yaml" ]; then
-        curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/buf.yaml"
+        curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/buf.yaml"
     fi
     if [ ! -f "buf.gen.yaml" ]; then
-        curl -sLJO "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/buf.gen.yaml"
+        curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/buf.gen.yaml"
     fi
     mkdir dist
     # Copy external proto files to src/external

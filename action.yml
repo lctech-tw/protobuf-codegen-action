@@ -34,9 +34,9 @@ runs:
       run: |
         echo "STABLE_MODE = $STABLE_MODE"
         if [ "$STABLE_MODE" == 'false' ]; then
-          sudo -E TAG_VERSION=$TAG_VERSION curl -sL "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/md-formatter.sh" | bash -s -- --remove-toc
+          sudo -E TAG_VERSION=$TAG_VERSION curl -sL "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/md-formatter.sh" | bash -s -- --remove-toc
         else
-          sudo -E TAG_VERSION=$TAG_VERSION curl -sL "https://raw.githubusercontent.com/lctech-andychuang/protobuf-codegen-action/main/proto/md-formatter.sh" | bash
+          sudo -E TAG_VERSION=$TAG_VERSION curl -sL "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/md-formatter.sh" | bash
         fi
       shell: bash
       env:
