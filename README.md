@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Compile
-        uses: lctech-andychuang/protobuf-codegen-action@v0
+        uses: lctech-tw/protobuf-codegen-action@v0
 ```
 <!-- 
 ---
