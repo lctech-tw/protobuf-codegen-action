@@ -11,6 +11,10 @@ inputs:
     required: false
     default: 'true'
 
+  compile-mode:
+    description: "Optional: compile mode"
+    required: true
+    default: 'neo'
 
 runs:
   using: "composite"
@@ -20,16 +24,20 @@ runs:
       shell: bash
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }} 
+        
     - name: Proto Dependencies
       run: 
         dependent-proto.sh
       shell: bash
+
     - name: Proto Compile
       run: 
-        compile.sh
+        COMPILE_MODE=$COMPILE_MODE compile.sh
       shell: bash
       env:
         TAG_VERSION: ${{ inputs.version }}
+        COMPILE_MODE: ${{ inputs.compile-mode }}
+
     - name: Format Doc
       run: |
         echo "STABLE_MODE = $STABLE_MODE"
