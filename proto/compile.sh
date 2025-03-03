@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#* Before the event: Need login gcloud service account
-
 # Init color
 RED='\033[0;31m'
 NC='\033[0m'
@@ -45,8 +43,8 @@ if [ "$COMPILE_MODE" == "Multi" ] || [ "$COMPILE_MODE" == "MULITI" ] || [ "$COMP
     echo -e "@ ENGINE = ${RED}Default${NC}"
     echo -e "@ ENV / COMPILE_MODE = ${COMPILE_MODE:-Default} : SCRIPT_FILE = ${RED}$SCRIPT_FILE${NC}"
     # Download script
-    curl -sLJO "https://raw.githubusercontent.com/lctech-tw/util_scripts/main/proto/$SCRIPT_FILE"
-    curl -sLJO "https://raw.githubusercontent.com/lctech-tw/util_scripts/main/proto/build-protoc-node.sh"
+    curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/$SCRIPT_FILE"
+    curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/build-protoc-node.sh"
     # Auth
     if [ ! "$(whoami)" == "lctech-zeki" ]; then
         # GCP
@@ -70,10 +68,10 @@ else
     cd ./src || exit
     # Download buf.yaml and buf.gen.yaml
     if [ ! -f "buf.yaml" ]; then
-        curl -sLJO "https://raw.githubusercontent.com/lctech-tw/util_scripts/main/proto/buf.yaml"
+        curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/buf.yaml"
     fi
     if [ ! -f "buf.gen.yaml" ]; then
-        curl -sLJO "https://raw.githubusercontent.com/lctech-tw/util_scripts/main/proto/buf.gen.yaml"
+        curl -sLJO "https://raw.githubusercontent.com/lctech-tw/protobuf-codegen-action/main/proto/buf.gen.yaml"
     fi
     mkdir dist
     # Copy external proto files to src/external
@@ -81,6 +79,7 @@ else
         rsync -av ../external/ ./
     fi
     docker run --volume "$(pwd):/workspace" --workdir /workspace bufbuild/buf generate
+
     mv dist ../dist && rm -rf buf.yaml buf.gen.yaml buf.lock
     # Modufy golang path
     sudo mv ../dist/go/github.com/"$GITHUB_REPOSITORY"/dist/go/* ../dist/go/ 

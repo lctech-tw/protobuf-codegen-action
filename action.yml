@@ -27,12 +27,12 @@ runs:
         
     - name: Proto Dependencies
       run: 
-        dependent-proto.sh
+        ./proto/dependent-proto.sh
       shell: bash
 
     - name: Proto Compile
       run: 
-        COMPILE_MODE=$COMPILE_MODE compile.sh
+        COMPILE_MODE=$COMPILE_MODE ./proto/compile.sh
       shell: bash
       env:
         TAG_VERSION: ${{ inputs.version }}
@@ -56,4 +56,6 @@ runs:
       run: |
         sudo rm -f md-formatter.sh
         sudo rm -f md-formater.sh
+        sudo rm -f md-formator.sh
+        sudo rm -f md-formattor.sh
       shell: bash
