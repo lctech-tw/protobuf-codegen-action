@@ -50,3 +50,10 @@ runs:
       env:
         TAG_VERSION: ${{ inputs.version }}
         STABLE_MODE: ${{ inputs.stable-mode }}
+
+    # md-formatter.sh was committed in the repo by previous way
+    - name: Remove md-formatter.sh
+      run: |
+        sudo rm -f md-formatter.sh
+        sudo rm -f md-formater.sh
+      shell: bash
