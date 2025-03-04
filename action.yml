@@ -27,12 +27,12 @@ runs:
         
     - name: Proto Dependencies
       run: 
-        ./proto/dependent-proto.sh
+        dependent-proto.sh
       shell: bash
 
     - name: Proto Compile
       run: 
-        COMPILE_MODE=$COMPILE_MODE ./proto/compile.sh
+        COMPILE_MODE=$COMPILE_MODE compile.sh
       shell: bash
       env:
         TAG_VERSION: ${{ inputs.version }}
