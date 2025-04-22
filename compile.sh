@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Init color
 RED='\033[0;31m'

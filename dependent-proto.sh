@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 # Purpose: download_github_proto_folder
 CONFIG_PATH="./src/dependent.config"
 

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # build protoc
 function _build-plugin {
