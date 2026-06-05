@@ -1,65 +1,59 @@
 #!/bin/bash
 
-# Remove all Markdown Tables of Contents from .md files
-# Replace "<a name" with "<a id"
-# Add header lines 
+# 從 .md 檔案中移除 Markdown 目錄（TOC）、修正錨點屬性，並加入 VitePress 前言區塊
 
-# Parse arguments
+# 解析命令列參數
 REMOVE_TOC=false
 while [[ "$#" -gt 0 ]]; do
     case $1 in
         --remove-toc) REMOVE_TOC=true ;;
-        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+        *) echo "未知參數: $1"; exit 1 ;;
     esac
     shift
 done
 
+# 預先取得專案名稱，避免在每個檔案迴圈中重複呼叫 git
+PROJECT_NAME=$(basename "$(git rev-parse --show-toplevel)")
+
 process_file() {
     local file=$1
-    echo "Processing: $file"
+    echo "處理: $file"
 
-    # Find the line number of the first <a> tag
-    local first_a_line=$(grep -n '<a' "$file" | head -n 1 | cut -d: -f1)
-    # Find the line number of the second <a> tag
-    local second_a_line=$(grep -n '<a' "$file" | sed -n '2p' | cut -d: -f1)
+    # 一次掃描取得前兩個 <a> 標籤的行號，避免重複讀取檔案
+    local a_lines
+    mapfile -t a_lines < <(grep -n '<a' "$file" | head -n 2 | cut -d: -f1)
+    local first_a_line="${a_lines[0]}"
+    local second_a_line="${a_lines[1]}"
 
-    # Check if both <a> tag line numbers are valid
     if [ -z "$first_a_line" ] || [ -z "$second_a_line" ]; then
-        echo "Two <a> tags not found"
+        echo "  警告: 未找到兩個 <a> 標籤，略過此檔案"
         return 1
     fi
 
+    # 條件性刪除兩個 <a> 標籤之間的 TOC 區塊
     if [ "$REMOVE_TOC" = true ]; then
-        # Use sed to delete lines between the two <a> tags
         sed -i "${first_a_line},${second_a_line}d" "$file"
-        echo "TOC removed from: $file"
+        echo "  已移除 TOC"
     fi
 
-    # Remove <a href="#top">Top</a>
-    sed -i '/<a href="#top">Top<\/a>/d' "$file"
-    echo "Removed <a href=\"#top\">Top</a> from: $file"
+    # 合併多個替換操作為單次 sed，減少磁碟 I/O
+    sed -i \
+        -e '/<a href="#top">Top<\/a>/d' \
+        -e "s/# Protocol Documentation/# ${PROJECT_NAME}/g" \
+        -e 's/<a name=/<a id=/g' \
+        "$file"
 
-    # Replace # Protocol Documentation
-    local project_name=$(basename "$(git rev-parse --show-toplevel)")
-    sed -i "s/# Protocol Documentation/# $project_name/g" "$file"
-    echo "Replace # Protocol Documentation with # $project_name"
+    # 在檔案開頭插入 VitePress 前言區塊與版本標籤
+    # 使用 printf + cat 取代兩次 sed，避免多行插入的相容性問題
+    printf -- '---\noutline: deep\n---\n\n# v%s\n' "${TAG_VERSION}" \
+        | cat - "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
 
-    # Replace "<a name" with "<a id"
-    sed -i 's/<a name=/<a id=/g' "$file"
-    echo "Replace <a name with <a id"
-
-    # Add header lines
-    sed -i '1i---\noutline: deep\n---' "$file"
-    echo "Add header lines to: $file"
-
-    # Add Git Tag Version below "outline: deep"
-    sed -i '/^---$/,/^---$/c\---\noutline: deep\n---\n# '"v$TAG_VERSION" "$file"
-    echo "Added Git tag version: $TAG_VERSION to: $file"
+    echo "  完成: $file"
 }
 
-# Iterate over all .md files
-find . -type f -name "*.md" | while IFS= read -r file; do
+# 批次處理目前目錄下README.md檔案
+find . -type f -name "README.md" | while IFS= read -r file; do
     process_file "$file"
 done
 
-echo "✅ All Markdown TOC have been removed!"
+echo "✅ 所有 Markdown 檔案處理完成！"
