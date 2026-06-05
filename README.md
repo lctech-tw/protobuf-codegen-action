@@ -1,37 +1,25 @@
-# 🚀 **Usage Guide**
+# protobuf-codegen-action
 
-## 📚 **Introduction**  
-This project includes a **GitHub Actions** workflow defined in a custom **`action.yml`** file located in the repository root. This action is designed for **[briefly describe the purpose, e.g., automated testing, CI/CD deployment, code formatting, etc.]**.
-
----
-
-## 🛠️ **Features**
-
-- Automatically generate Proto documentation and update the README file with the latest changes, ensuring documentation stays consistent with code updates. 
+從 Protocol Buffers (`.proto`) 檔案自動生成多語言程式碼的 GitHub Action，支援 Go、Python、TypeScript 等語言，並在 `neo` 模式下自動更新 API 文件。
 
 ---
 
-## 📦 **File Structure**
+## 功能特色
 
-```plaintext
-.
-├── action.yml      # GitHub Actions configuration file
-└── README.md       # Documentation for this action
-```
-
-- **`action.yml`**: Defines the core logic and metadata for the GitHub Action.  
-- **`README.md`**: Provides documentation and usage instructions (you are reading it now).  
+- 從 `.proto` 檔案自動生成多語言程式碼（Go、Python、TypeScript 等）
+- 支援多種編譯引擎（`neo`、`v3`、`v4`、`multi`、`old`）
+- 自動下載外部 Proto 依賴（透過 `src/dependent.config`）
+- `neo` 模式下使用 [buf](https://buf.build/) 工具鏈，產生乾淨的 `dist/` 輸出
+- 自動格式化並更新 `README.md` 為最新 API 文件
 
 ---
 
-## 🚀 **How to Use This GitHub Action**
+## 快速開始
 
-### **1. Reference the Action in Your Workflow**
-
-To use this GitHub Action, create a workflow file in your repository (e.g., `.github/workflows/main.yml`) and reference your custom action:
+在您的儲存庫中建立 `.github/workflows/proto.yml`：
 
 ```yaml
-name: Example Workflow
+name: Proto Compile
 
 on:
   push:
@@ -39,112 +27,116 @@ on:
       - main
 
 jobs:
-  example-job:
+  compile:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Compile
+      - name: Compile Proto
         uses: lctech-tw/protobuf-codegen-action@v0
-```
-<!-- 
----
-
-### **2. Define Inputs (if applicable)**
-
-If your `action.yml` defines `inputs`, make sure to pass them correctly in your workflow:
-
-**Example `action.yml` Input Definition:**
-```yaml
-inputs:
-  input1:
-    description: 'Description for input1'
-    required: true
-  input2:
-    description: 'Description for input2'
-    required: false
-```
-
-**Workflow Example with Inputs:**
-```yaml
-with:
-  input1: 'value1'
-  input2: 'optional_value'
+        with:
+          version: ${{ github.ref_name }}
+          compile-mode: neo
 ```
 
 ---
 
-### **3. Outputs (if applicable)**
+## 輸入參數
 
-If your `action.yml` defines `outputs`, you can reference them in your workflow:
+| 參數 | 必填 | 預設值 | 說明 |
+|------|------|--------|------|
+| `version` | ✅ | — | 版本標籤，通常帶入 `${{ github.ref_name }}` |
+| `compile-mode` | ✅ | `neo` | 編譯引擎，詳見下方說明 |
+| `stable-mode` | ❌ | `true` | `false` 時，格式化文件時移除目錄（TOC） |
 
-**Example `action.yml` Output Definition:**
-```yaml
-outputs:
-  result:
-    description: 'Result of the action'
+### compile-mode 說明
+
+| 值 | 說明 |
+|----|------|
+| `neo`（預設）| 使用 [buf](https://buf.build/) 工具鏈，輸出至 `dist/`，並自動更新 `README.md` |
+| `multi` | 使用 Docker 多語言編譯引擎（舊版） |
+| `v3` | 使用 `build-protoc3.sh` 編譯 |
+| `v4` | 使用 `build-protoc4.sh` 編譯 |
+| `old` | 使用 `build-protoc.sh` 編譯（最舊版） |
+
+---
+
+## 外部 Proto 依賴
+
+若您的 `.proto` 檔案需要引用其他 GitHub 儲存庫的 Proto，請建立 `src/dependent.config`：
+
+```
+# 格式：{org}/{repo}
+lctech-tw/example-proto
+lctech-tw/another-proto
 ```
 
-**Workflow Example with Outputs:**
-```yaml
-- name: Display Action Result
-  run: echo "Result: ${{ steps.example-job.outputs.result }}"
+Action 執行時會自動從對應儲存庫的 `src/` 目錄拉取 Proto 檔案至本地 `external/` 資料夾。
+
+---
+
+## 儲存庫結構
+
+```plaintext
+.
+├── action.yml          # GitHub Action 定義
+├── compile.sh          # 編譯入口腳本
+├── dependent-proto.sh  # 外部 Proto 依賴下載腳本
+├── proto/              # 編譯引擎腳本與 buf 設定檔
+│   ├── buf.yaml
+│   ├── buf.gen.yaml
+│   ├── build-neo.sh
+│   ├── build-protoc.sh
+│   ├── build-protoc2.sh
+│   ├── build-protoc3.sh
+│   ├── build-protoc4.sh
+│   └── md-formatter.sh
+└── README.md
 ```
 
 ---
 
-## ⚙️ **Example `action.yml` File**
+## neo 模式運作流程
 
-Here’s an example of how your `action.yml` might look:
+```
+src/
+├── *.proto
+├── dependent.config    # 可選，列出外部依賴
+└── external/           # 自動下載的外部 proto（由 dependent-proto.sh 產生）
 
-```yaml
-name: 'Custom GitHub Action'
-description: 'An example GitHub Action to perform a custom task'
-inputs:
-  input1:
-    description: 'First input value'
-    required: true
-  input2:
-    description: 'Second input value'
-    required: false
-outputs:
-  result:
-    description: 'The result of the action'
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - ${{ inputs.input1 }}
-    - ${{ inputs.input2 }}
-``` -->
+執行後產生：
+dist/
+├── go/                 # Go 生成程式碼
+├── python/             # Python 生成程式碼
+└── docs/               # API 文件（更新至 README.md）
+```
 
 ---
 
-## 🔍 **FAQ**
+## 常見問題
 
-### **Q1: How do I debug the action if it fails?**  
-- Go to the **Actions** tab in your repository.  
-- Select the failed workflow run.  
-- Check the **logs** to identify errors.
+**Q：Action 失敗時如何除錯？**  
+前往儲存庫的 **Actions** 頁籤，選擇失敗的執行記錄並展開各步驟的日誌。
 
-### **Q2: How do I manually trigger this action?**  
-- Add a `workflow_dispatch` event to your workflow YAML:
+**Q：如何手動觸發此 Action？**  
+在工作流程 YAML 加入 `workflow_dispatch`：
 ```yaml
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 ```
 
+**Q：`stable-mode: false` 有什麼效果？**  
+`neo` 模式下格式化文件時，會移除自動生成的目錄（Table of Contents）。
+
 ---
 
-## 🤝 **Contributing**
+## 貢獻指南
 
-Contributions are welcome! If you'd like to improve this action:
-
-1. **Fork** this repository.  
-2. Create a new branch: `git checkout -b feature/your-feature`.  
-3. Make your changes and commit: `git commit -am 'Add new feature'`.  
-4. Push to your branch: `git push origin feature/your-feature`.  
-5. Submit a Pull Request.  
-
+1. Fork 此儲存庫
+2. 建立功能分支：`git checkout -b feature/your-feature`
+3. 提交變更：`git commit -am 'Add new feature'`
+4. 推送分支：`git push origin feature/your-feature`
+5. 開啟 Pull Request

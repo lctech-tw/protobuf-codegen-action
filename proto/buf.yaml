@@ -12,5 +12,6 @@ breaking:
   except:
     - EXTENSION_NO_DELETE
     - FIELD_SAME_DEFAULT
-# deps:
+deps:
+  - buf.build/bufbuild/protovalidate
 #   - buf.build/envoyproxy/protoc-gen-validate
