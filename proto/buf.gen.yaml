@@ -63,4 +63,7 @@ plugins:
   - remote: buf.build/community/pseudomuto-doc
     out: dist/docs
     opt: html,index.html
-    
+  - remote: buf.build/community/sudorandom-connect-openapi
+    out: dist/docs
+    opt:
+    - features=connectrpc;google.api.http;twirp;gnostic;protovalidate
